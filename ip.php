@@ -21,9 +21,17 @@ function ip()
 
 $ip = ip();
 
-if (strpos(getenv('HTTP_USER_AGENT'), 'curl') === false) {
+$callback = isset($_GET['callback']) ? trim($_GET['callback']) : ''; //jsonp回调参数，必需
+
+if (isset($_SERVER['HTTP_REFERER']) && strops($_SERVER['HTTP_REFERER'], 'getip.icu') === false) {
+    header("HTTP/1.1 403 Forbidden");
+}
+
+if (strpos(getenv('HTTP_USER_AGENT'), 'curl') === false && $_GET['text'] !== 'true') {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode(['ip' => $ip]);
+} else if (isset($_GET['callback'])) {
+    echo trim($_GET['callback']) . '(' . json_encode(['ip' => $ip]) . ')';
 } else {
     echo $ip . "\n";
 }
