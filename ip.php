@@ -21,17 +21,16 @@ function ip()
 
 $ip = ip();
 
-$callback = isset($_GET['callback']) ? trim($_GET['callback']) : ''; //jsonp回调参数，必需
-
-if (isset($_SERVER['HTTP_REFERER']) && strops($_SERVER['HTTP_REFERER'], 'getip.icu') === false) {
+if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], "getip.icu") === false && strstr($_SERVER['HTTP_REFERER'], "localhost") === false) {
     header("HTTP/1.1 403 Forbidden");
-}
-
-if (strpos(getenv('HTTP_USER_AGENT'), 'curl') === false && $_GET['text'] !== 'true') {
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode(['ip' => $ip]);
-} else if (isset($_GET['callback'])) {
-    echo trim($_GET['callback']) . '(' . json_encode(['ip' => $ip]) . ')';
+    die('403');
 } else {
-    echo $ip . "\n";
+    if (strpos(getenv('HTTP_USER_AGENT'), 'curl') === false && isset($_GET['text']) && $_GET['text'] !== 'true') {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ip' => $ip]);
+    } else if (isset($_GET['callback'])) {
+        echo trim($_GET['callback']) . '(' . json_encode(['ip' => $ip]) . ')';
+    } else {
+        echo $ip . "\n";
+    }
 }
