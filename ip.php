@@ -15,8 +15,9 @@ function ip()
     } elseif (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
-    $res = preg_match('/[\d\.]{7,15}/', $ip, $matches) ? $matches[0] : '';
-    return $res;
+    // $res = preg_match('/[\d\.]{7,15}/', $ip, $matches) ? $matches[0] : '';
+    // 可能是IPv6
+    return $ip;
 }
 
 $ip = ip();
